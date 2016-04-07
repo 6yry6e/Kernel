@@ -1,37 +1,33 @@
 ;Boot sector "Hello World!", prints "Hello World!"
+    
+[org 0x7c00]		; Boot sector starts at 0x7c00 address
+			; we say assembler where this code would be loaded
 
-mov ah, 0x0e 	; Set 2-d byte of ax with 0x0e
-		; 0x0e says 0x10 BIOS interrupt call to
-		; write character in TTY mode
+mov bx, HELLO_WORLD	; Set string address
+call print_string
 
-mov al, 'H'     ; Set 1-d byte of ax with 'H'
-int 0x10        ; Call BIOS interrupt call (Video Services)
-		; With ah set to 0x0e it tooks char from al register
-		; And prints it
-mov al, 'e'	
-int 0x10
-mov al, 'l'
-int 0x10
-mov al, 'l'
-int 0x10
-mov al, 'o'
-int 0x10
-mov al, ' '
-int 0x10
-mov al, 'W'
-int 0x10
-mov al, 'o'
-int 0x10
-mov al, 'r'
-int 0x10
-mov al, 'l'
-int 0x10
-mov al, 'd'
-int 0x10
-mov al, '!'
-int 0x10
+jmp $                   ; Jump to current address (endless loop)
 
-jmp $                   ;Jump to current address (endless loop)
+HELLO_WORLD:
+db 'Hello World!',0
+;Prints string bx - address of string
+print_string:
+push bx
+push ax
+mov ah, 0x0e
+print_string_loop:
+mov al, [bx]		; Set current char	
+cmp al,0		; Check end of the string
+jz print_string_return
+mov ah,0x0e		; Set iterrupt command for int 0x10
+int 0x10 		; Call BIOS interrupt call (Video Services)
+			; it tooks char from al register and prints it
+add bx,1		; Go to next char
+jmp print_string_loop
+print_string_return:
+pop ax
+pop bx
+ret
 
 times 510-($-$$) db 0   ;Fill out file with zero-s until 510 byte
 			;boot sector must be 512 bytes long with
