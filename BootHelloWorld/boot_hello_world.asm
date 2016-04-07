@@ -14,7 +14,6 @@ db 'Hello World!',0
 print_string:
 push bx
 push ax
-mov ah, 0x0e
 print_string_loop:
 mov al, [bx]		; Set current char	
 cmp al,0		; Check end of the string
