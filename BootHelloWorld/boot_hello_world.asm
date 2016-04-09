@@ -4,26 +4,26 @@
 			; we say assembler where this code would be loaded
 
 mov bx, HELLO_WORLD	; Set string address
-call print_string
+call print
 
 jmp $                   ; Jump to current address (endless loop)
 
 HELLO_WORLD:
 db 'Hello World!',0
 ;Prints string bx - address of string
-print_string:
+print:
 push bx
 push ax
-print_string_loop:
+.loop:
 mov al, [bx]		; Set current char	
 cmp al,0		; Check end of the string
-jz print_string_return
+jz break
 mov ah,0x0e		; Set iterrupt command for int 0x10
 int 0x10 		; Call BIOS interrupt call (Video Services)
 			; it tooks char from al register and prints it
 add bx,1		; Go to next char
-jmp print_string_loop
-print_string_return:
+jmp .loop
+break:
 pop ax
 pop bx
 ret
