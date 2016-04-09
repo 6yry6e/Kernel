@@ -1,5 +1,5 @@
 ;This code make switch from 16-bit real mode to 32 bit protected mode
-[bits 16]		; Now we are working in 16 bit mode
+[bits 16]
 
 switch_to_protected_mode:
 cli			; Disable interrupt, CPU will ignore any interruprs
